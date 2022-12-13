@@ -11,8 +11,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type dentistHandler struct{
-	dentistGroup	gin.RouterGroup
+type dentistHandler struct {
+	dentistGroup   gin.RouterGroup
 	dentistService usecase.Dentist
 }
 
@@ -26,12 +26,14 @@ func (d *dentistHandler) ConfigureDentistRouter() {
 }
 
 func (d *dentistHandler) post(ctx *gin.Context) {
-	var dentist domain.Dentist
-	err := ctx.ShouldBindJSON(&dentist); if err != nil {
+	var dentist domain.CreateDentist
+	err := ctx.ShouldBindJSON(&dentist)
+	if err != nil {
 		web.Failure(ctx, 400, err)
 		return
 	}
-	err = d.dentistService.Post(dentist); if err != nil {
+	err = d.dentistService.Post(dentist)
+	if err != nil {
 		web.Failure(ctx, 500, err)
 		return
 	}
@@ -45,12 +47,14 @@ func (d *dentistHandler) get(ctx *gin.Context) {
 		return
 	}
 
-	idConverted, err := strconv.Atoi(id); if err != nil {
+	idConverted, err := strconv.Atoi(id)
+	if err != nil {
 		web.Failure(ctx, 400, errors.New("incorrect id sent. must be a number"))
 		return
 	}
 
-	dentist, err := d.dentistService.Get(idConverted); if err != nil {
+	dentist, err := d.dentistService.Get(idConverted)
+	if err != nil {
 		web.Failure(ctx, 500, errors.New("errors getting entity"))
 		return
 	}
@@ -64,7 +68,8 @@ func (d *dentistHandler) get(ctx *gin.Context) {
 }
 
 func (d *dentistHandler) getAll(ctx *gin.Context) {
-	dentists, err := d.dentistService.GetAll(); if err != nil {
+	dentists, err := d.dentistService.GetAll()
+	if err != nil {
 		web.Failure(ctx, 500, err)
 		return
 	}
@@ -79,17 +84,20 @@ func (d *dentistHandler) put(ctx *gin.Context) {
 		return
 	}
 
-	idConverted, err := strconv.Atoi(id); if err != nil {
+	idConverted, err := strconv.Atoi(id)
+	if err != nil {
 		web.Failure(ctx, 400, errors.New("incorrect id sent. must be a number"))
 		return
 	}
 
-	err = ctx.ShouldBindJSON(&dentist); if err != nil {
+	err = ctx.ShouldBindJSON(&dentist)
+	if err != nil {
 		web.Failure(ctx, 400, err)
 		return
 	}
 
-	dentist, err = d.dentistService.Get(idConverted); if err != nil {
+	dentist, err = d.dentistService.Get(idConverted)
+	if err != nil {
 		web.Failure(ctx, 500, errors.New("errors getting entity"))
 		return
 	}
@@ -99,7 +107,8 @@ func (d *dentistHandler) put(ctx *gin.Context) {
 		return
 	}
 
-	err = d.dentistService.Put(idConverted, dentist); if err != nil {
+	err = d.dentistService.Put(idConverted, dentist)
+	if err != nil {
 		web.Failure(ctx, 500, err)
 		return
 	}
@@ -117,12 +126,14 @@ func (d *dentistHandler) delete(ctx *gin.Context) {
 		return
 	}
 
-	idConverted, err := strconv.Atoi(id); if err != nil {
+	idConverted, err := strconv.Atoi(id)
+	if err != nil {
 		web.Failure(ctx, 400, errors.New("incorrect id sent. must be a number"))
 		return
 	}
 
-	dentist, err := d.dentistService.Get(idConverted); if err != nil {
+	dentist, err := d.dentistService.Get(idConverted)
+	if err != nil {
 		web.Failure(ctx, 500, errors.New("errors getting entity"))
 		return
 	}
@@ -132,7 +143,8 @@ func (d *dentistHandler) delete(ctx *gin.Context) {
 		return
 	}
 
-	err = d.dentistService.Delete(idConverted); if err != nil {
+	err = d.dentistService.Delete(idConverted)
+	if err != nil {
 		web.Failure(ctx, 500, err)
 		return
 	}

@@ -4,19 +4,19 @@ import (
 	"checkpoint-2/internal/application/repository"
 	"checkpoint-2/internal/domain"
 	"database/sql"
+	"errors"
 )
 
 type patientDatabase struct {
 	db *sql.DB
 }
 
-func (d *patientDatabase) Post(patient domain.Patient) error {
+func (d *patientDatabase) Post(patient domain.CreatePatient) error {
 	_, err := d.db.Exec(
 		`INSERT INTO patients
-		(id, name, surname, rg, registry_date)
+		(name, surname, rg, registry_date)
 		VALUES
-		(?, ?, ?, ?, ?, ?)`,
-		patient.Id,		
+		(?, ?, ?, ?, ?)`,
 		patient.Name,
 		patient.Surname,
 		patient.RG,
@@ -86,6 +86,15 @@ func (d *patientDatabase) Patch(id int, dentist domain.Patient) error {
 	return nil
 }
 func (d *patientDatabase) Delete(id int) error {
+	stmt, err := d.db.Exec("DELETE FROM patients WHERE id=?", id)
+	if err != nil {
+		return err
+	}
+
+	rowsAffected, _ := stmt.RowsAffected()
+	if rowsAffected == 0 {
+		return errors.New("error to delete")
+	}
 	return nil
 }
 

@@ -12,8 +12,9 @@ type patientService struct {
 	repository repository.PatientRepository
 }
 
-func (d *patientService) Post(patient domain.Patient) error {
-	err := d.repository.Post(patient); if err != nil {
+func (d *patientService) Post(patient domain.CreatePatient) error {
+	err := d.repository.Post(patient)
+	if err != nil {
 		log.WithError(err).Info("error creating patient")
 		return err
 	}
@@ -21,7 +22,8 @@ func (d *patientService) Post(patient domain.Patient) error {
 }
 
 func (d *patientService) Get(id int) (domain.Patient, error) {
-	patient, err := d.repository.Get(id); if err != nil {
+	patient, err := d.repository.Get(id)
+	if err != nil {
 		log.WithError(err).Info("error getting patient")
 		return domain.Patient{}, err
 	}
@@ -29,7 +31,8 @@ func (d *patientService) Get(id int) (domain.Patient, error) {
 }
 
 func (d *patientService) GetAll() ([]domain.Patient, error) {
-	patients, err := d.repository.GetAll(); if err != nil {
+	patients, err := d.repository.GetAll()
+	if err != nil {
 		log.WithError(err).Info("error getting all patient")
 		return nil, err
 	}
@@ -37,7 +40,8 @@ func (d *patientService) GetAll() ([]domain.Patient, error) {
 }
 
 func (d *patientService) Put(id int, patient domain.Patient) error {
-	err := d.repository.Put(id, patient); if err != nil {
+	err := d.repository.Put(id, patient)
+	if err != nil {
 		log.WithError(err).Info("error putting the patient")
 		return err
 	}
@@ -45,7 +49,8 @@ func (d *patientService) Put(id int, patient domain.Patient) error {
 }
 
 func (d *patientService) Patch(id int, patient domain.Patient) error {
-	err := d.repository.Patch(id, patient); if err != nil {
+	err := d.repository.Patch(id, patient)
+	if err != nil {
 		log.WithError(err).Info("error patching the patient")
 		return err
 	}
@@ -53,7 +58,8 @@ func (d *patientService) Patch(id int, patient domain.Patient) error {
 }
 
 func (d *patientService) Delete(id int) error {
-	err := d.repository.Delete(id); if err != nil {
+	err := d.repository.Delete(id)
+	if err != nil {
 		log.WithError(err).Info("error deleting the patient")
 		return err
 	}
