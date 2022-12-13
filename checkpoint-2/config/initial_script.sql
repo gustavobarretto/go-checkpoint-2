@@ -19,11 +19,11 @@ DROP TABLE IF EXISTS appointments;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `dentistoffice`.`dentists` (
   `id` INT(11) NOT NULL  AUTO_INCREMENT,
-  `first_name` VARCHAR(255) NOT NULL,
-  `last_name` VARCHAR(255) NOT NULL,
-  `registration` VARCHAR(255) NOT NULL,
+  `name` VARCHAR(255) NOT NULL,
+  `surname` VARCHAR(255) NOT NULL,
+  `registry` VARCHAR(255) NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE INDEX `registration_unique` (`registration` ASC) VISIBLE)
+  UNIQUE INDEX `registry_unique` (`registry` ASC) VISIBLE)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb3;
 
@@ -32,13 +32,13 @@ DEFAULT CHARACTER SET = utf8mb3;
 -- Table `mercadofresco`.`localities`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `dentistoffice`.`patients` (
-  `id` INT(11) NOT NULL AUTO_INCREMENT,
-  `identity_registration` VARCHAR(255) NOT NULL,
+  `id` INT(11) NOT NULL AUTO_INCREMENT,  
   `name` VARCHAR(255) NOT NULL,
   `surname` VARCHAR(255) NOT NULL,
-  `registration_date` DATETIME NOT NULL,
+  `rg` VARCHAR(255) NOT NULL,
+  `registry_date` DATETIME NOT NULL,
   PRIMARY KEY (`id`),
-  CONSTRAINT `identity_registration_unique` UNIQUE (`identity_registration`))
+  CONSTRAINT `rg_unique` UNIQUE (`rg`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb3;
 

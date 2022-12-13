@@ -47,7 +47,31 @@ func (d *dentistDatabase) Get(id int) (domain.Dentist, error) {
 }
 
 func (d *dentistDatabase) GetAll() ([]domain.Dentist, error) {
-	return []domain.Dentist{}, nil
+	var dentists []domain.Dentist
+
+	rows, err := d.db.Query("SELECT id, name, surname, registry FROM dentists")
+
+	if err != nil {
+		return dentists, err
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+		var dentist domain.Dentist
+
+		err := rows.Scan(
+			&dentist.Id,
+			&dentist.Name,
+			&dentist.Surname,
+			&dentist.Registry,
+		)
+		if err != nil {
+			return dentists, err
+		}
+		dentists = append(dentists, dentist)
+	}
+	return dentists, nil
 }
 func (d *dentistDatabase) Put(id int, dentist domain.Dentist) error {
 	return nil
