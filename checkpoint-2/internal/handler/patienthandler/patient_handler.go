@@ -77,7 +77,7 @@ func (d *patientHandler) getAll(ctx *gin.Context) {
 }
 
 func (d *patientHandler) put(ctx *gin.Context) {
-	var patient domain.Patient
+	var patient domain.UpdatePatient
 	id := ctx.Param("id")
 	if id == "" {
 		web.Failure(ctx, 400, errors.New("no id sent"))
@@ -96,18 +96,20 @@ func (d *patientHandler) put(ctx *gin.Context) {
 		return
 	}
 
-	patient, err = d.patientService.Get(idConverted)
+	_, err = d.patientService.Get(idConverted)
 	if err != nil {
 		web.Failure(ctx, 500, errors.New("errors getting entity"))
 		return
 	}
 
-	if reflect.DeepEqual(patient, domain.Patient{}) {
+	if reflect.DeepEqual(patient, domain.UpdatePatient{}) {
 		web.Failure(ctx, 404, errors.New("entity not found"))
 		return
 	}
 
-	err = d.patientService.Put(idConverted, patient)
+	err = d.patientService.Put(idConverted,
+		domain.UpdatePatient{Name: patient.Name, Surname: patient.Surname,
+			RG: patient.RG, RegistryDate: patient.RegistryDate})
 	if err != nil {
 		web.Failure(ctx, 500, err)
 		return

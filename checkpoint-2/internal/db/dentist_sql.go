@@ -73,7 +73,15 @@ func (d *dentistDatabase) GetAll() ([]domain.Dentist, error) {
 	}
 	return dentists, nil
 }
-func (d *dentistDatabase) Put(id int, dentist domain.Dentist) error {
+func (d *dentistDatabase) Put(id int, dentist domain.UpdateDentist) error {
+
+	_, err := d.db.Exec("UPDATE dentists SET name=?, surname=?, registry=? WHERE id=?",
+		dentist.Name, dentist.Surname, dentist.Registry, id)
+
+	if err != nil {
+		return errors.New("error to update")
+	}
+
 	return nil
 }
 func (d *dentistDatabase) Patch(id int, dentist domain.Dentist) error {

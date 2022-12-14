@@ -39,7 +39,7 @@ func (d *dentistService) GetAll() ([]domain.Dentist, error) {
 	return dentists, nil
 }
 
-func (d *dentistService) Put(id int, dentist domain.Dentist) error {
+func (d *dentistService) Put(id int, dentist domain.UpdateDentist) error {
 	err := d.repository.Put(id, dentist)
 	if err != nil {
 		log.WithError(err).Info("error putting the dentist")

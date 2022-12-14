@@ -16,7 +16,7 @@ func (d *patientDatabase) Post(patient domain.CreatePatient) error {
 		`INSERT INTO patients
 		(name, surname, rg, registry_date)
 		VALUES
-		(?, ?, ?, ?, ?)`,
+		(?, ?, ?, ?)`,
 		patient.Name,
 		patient.Surname,
 		patient.RG,
@@ -79,7 +79,15 @@ func (d *patientDatabase) GetAll() ([]domain.Patient, error) {
 	return patients, nil
 }
 
-func (d *patientDatabase) Put(id int, dentist domain.Patient) error {
+func (d *patientDatabase) Put(id int, patient domain.UpdatePatient) error {
+
+	_, err := d.db.Exec("UPDATE patients SET name=?, surname=?, rg=?, registry_date=? WHERE id=?",
+		patient.Name, patient.Surname, patient.RG, patient.RegistryDate, id)
+
+	if err != nil {
+		return errors.New("error to update")
+	}
+
 	return nil
 }
 func (d *patientDatabase) Patch(id int, dentist domain.Patient) error {
