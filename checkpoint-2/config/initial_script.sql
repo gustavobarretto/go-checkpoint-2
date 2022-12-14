@@ -73,11 +73,11 @@ INSERT INTO `dentists` VALUES
 (5, 'Luís', 'Inácio', 'CPX-8761');
 
 INSERT INTO `patients` VALUES
-(1,'81331399','Eduardo', 'de Araújo','2008-11-11 13:23:44'),
-(2,'98091211','Jair Messias', 'Bolsonaro','2021-10-09 12:13:04'),
-(3,'09191884','Dilma', 'Roussef', '2015-03-01 09:03:11'),
-(4,'12241402','Jucelino', 'Kubitschek','2019-01-25 20:00:00'),
-(5,'87723428','Itamar', 'Franco','2017-06-06 13:15:00');
+(1,'Eduardo', 'de Araújo','81331399', '2008-11-11 13:23:44'),
+(2,'Jair Messias', 'Bolsonaro', '98091211', '2021-10-09 12:13:04'),
+(3,'Dilma', 'Roussef', '09191884', '2015-03-01 09:03:11'),
+(4,'Jucelino', 'Kubitschek', '12241402','2019-01-25 20:00:00'),
+(5,'Itamar', 'Franco', '87723428','2017-06-06 13:15:00');
 
 INSERT INTO `appointments` VALUES
 (1,'2020-08-08 09:00:00', 1, 1),

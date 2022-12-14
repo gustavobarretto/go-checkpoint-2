@@ -5,6 +5,7 @@ import (
 	"checkpoint-2/internal/domain"
 	"database/sql"
 	"errors"
+	"fmt"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -42,7 +43,44 @@ func (a *appointmentDatabase) Get(id int) (domain.Appointment, error) {
 		log.WithError(err).Info("error getting appointment")
 		return domain.Appointment{}, err
 	}
-	
+
+	for rows.Next() {
+		err := rows.Scan(
+			&appointment.Id,
+			&appointment.AppointmentDate,
+			&appointment.Patient.Id,
+			&appointment.Patient.Name,
+			&appointment.Patient.Surname,
+			&appointment.Patient.RG,
+			&appointment.Patient.RegistryDate,
+			&appointment.Dentist.Id,
+			&appointment.Dentist.Name,
+			&appointment.Dentist.Surname,
+			&appointment.Dentist.Registry,
+		)
+		if err != nil {
+			return domain.Appointment{}, err
+		}
+	}
+	return appointment, nil
+}
+
+func (a *appointmentDatabase) GetRG(rg string) (domain.Appointment, error) {
+	var appointment domain.Appointment
+
+	rows, err := a.db.Query(
+		`SELECT a.id, a.consult_date, p.*, d.* FROM appointments as a
+		INNER JOIN dentists as d ON a.dentist_id = d.id
+		INNER JOIN patients as p ON a.patient_id = p.id
+		WHERE p.rg=?`,
+		rg)
+	fmt.Println(rows)
+	fmt.Println(err)
+	if err != nil {
+		log.WithError(err).Info("error getting appointment")
+		return domain.Appointment{}, err
+	}
+
 	for rows.Next() {
 		err := rows.Scan(
 			&appointment.Id,
@@ -70,12 +108,12 @@ func (a *appointmentDatabase) GetAll() ([]domain.Appointment, error) {
 		`SELECT a.id, a.consult_date, p.*, d.* FROM appointments as a
 		INNER JOIN dentists as d ON a.dentist_id = d.id
 		INNER JOIN patients as p ON a.patient_id = p.id`)
-	
-		if err != nil {
+
+	if err != nil {
 		log.WithError(err).Info("error getting appointment")
 		return appointments, err
 	}
-	
+
 	for rows.Next() {
 		var appointment domain.Appointment
 		err := rows.Scan(
