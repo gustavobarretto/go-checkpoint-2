@@ -33,7 +33,11 @@ func (s *server) Setup() error {
 	patientService := patientusecase.NewPatientService(patientDatabase)
 
 	appointmentDatabase := db.NewAppointmentDatabase(database)
-	appointmentService := appointmentusecase.NewAppointmentService(appointmentDatabase)
+	appointmentService := appointmentusecase.NewAppointmentService(
+		appointmentDatabase,
+		dentistDatabase,
+		patientDatabase,
+	)
 
 	
 	router := routes.NewRoutes(

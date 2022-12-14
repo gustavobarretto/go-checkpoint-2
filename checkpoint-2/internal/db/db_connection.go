@@ -11,7 +11,7 @@ import (
 
 const (
 	dbType = "mysql"
-	uriConnection = "root:root@tcp(localhost:3306)/my_db"
+	uriConnection = "user:@tcp(localhost:3306)/my_db"
 	scriptPath = "./config/initial_script.sql"
 )
 

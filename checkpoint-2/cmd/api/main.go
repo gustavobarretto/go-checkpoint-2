@@ -8,10 +8,12 @@ import (
 
 func main() {
 	app := server.NewServer()
-	err := app.Setup(); if err != nil {
+	err := app.Setup()
+	if err != nil {
 		log.WithError(err).Panic("error on setup")
 	}
-	err = app.Run(); if err != nil {
+	err = app.Run()
+	if err != nil {
 		log.WithError(err).Panic("error running server")
 	}
 }

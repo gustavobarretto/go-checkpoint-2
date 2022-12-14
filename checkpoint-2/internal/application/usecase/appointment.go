@@ -5,10 +5,10 @@ import (
 )
 
 type Appointment interface {
-	Post(domain.Appointment) error
+	Post(domain.CreateAppointment) error
 	Get(int) (domain.Appointment, error)
 	GetAll() ([]domain.Appointment, error)
-	Put(int, domain.Appointment) error
-	Patch(int, domain.Appointment) error
+	Put(int, domain.UpdateAppointment) error
+	Patch(int, domain.PatchAppointment) error
 	Delete(int) error
 }

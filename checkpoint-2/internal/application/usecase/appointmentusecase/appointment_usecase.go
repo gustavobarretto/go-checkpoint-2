@@ -10,10 +10,22 @@ import (
 
 type appointmentService struct {
 	repository repository.AppointmentRepository
+	dentistRepository repository.DentistRepository
+	patientRepository repository.PatientRepository
 }
 
-func (d *appointmentService) Post(appointment domain.Appointment) error {
-	err := d.repository.Post(appointment); if err != nil {
+func (d *appointmentService) Post(appointment domain.CreateAppointment) error {
+	_, err := d.dentistRepository.Get(appointment.DentistId); if err != nil {
+		log.WithError(err).Info("error getting dentist")
+		return err
+	}
+
+	_, err = d.patientRepository.Get(appointment.PatientId); if err != nil {
+		log.WithError(err).Info("error getting dentist")
+		return err
+	}
+	
+	err = d.repository.Post(appointment); if err != nil {
 		log.WithError(err).Info("error creating appointment")
 		return err
 	}
@@ -36,7 +48,7 @@ func (d *appointmentService) GetAll() ([]domain.Appointment, error) {
 	return appointments, nil
 }
 
-func (d *appointmentService) Put(id int, appointment domain.Appointment) error {
+func (d *appointmentService) Put(id int, appointment domain.UpdateAppointment) error {
 	err := d.repository.Put(id, appointment); if err != nil {
 		log.WithError(err).Info("error putting the appointment")
 		return err
@@ -44,7 +56,7 @@ func (d *appointmentService) Put(id int, appointment domain.Appointment) error {
 	return nil
 }
 
-func (d *appointmentService) Patch(id int, appointment domain.Appointment) error {
+func (d *appointmentService) Patch(id int, appointment domain.PatchAppointment) error {
 	err := d.repository.Patch(id, appointment); if err != nil {
 		log.WithError(err).Info("error patching the appointment")
 		return err
@@ -60,6 +72,10 @@ func (d *appointmentService) Delete(id int) error {
 	return nil
 }
 
-func NewAppointmentService(r repository.AppointmentRepository) usecase.Appointment {
-	return &appointmentService{r}
+func NewAppointmentService(
+	r repository.AppointmentRepository,
+	dr repository.DentistRepository,
+	pr repository.PatientRepository,
+	) usecase.Appointment {
+	return &appointmentService{r, dr, pr}
 }

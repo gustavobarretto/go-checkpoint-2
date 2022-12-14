@@ -11,34 +11,38 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type appointmentHandler struct{
+type appointmentRequest struct {
+	
+}
+
+type appointmentHandler struct {
 	appointmentGroup	gin.RouterGroup
 	appointmentService usecase.Appointment
 }
 
-func (d *appointmentHandler) ConfigureAppointmentRouter() {
-	d.appointmentGroup.POST("", d.post)
-	d.appointmentGroup.GET(":id", d.get)
-	d.appointmentGroup.GET("", d.getAll)
-	d.appointmentGroup.PUT(":id", d.put)
-	d.appointmentGroup.PATCH(":id", d.patch)
-	d.appointmentGroup.DELETE(":id", d.delete)
+func (a *appointmentHandler) ConfigureAppointmentRouter() {
+	a.appointmentGroup.POST("", a.post)
+	a.appointmentGroup.GET(":id", a.get)
+	a.appointmentGroup.GET("", a.getAll)
+	a.appointmentGroup.PUT(":id", a.put)
+	a.appointmentGroup.PATCH(":id", a.patch)
+	a.appointmentGroup.DELETE(":id", a.delete)
 }
 
-func (d *appointmentHandler) post(ctx *gin.Context) {
-	var appointment domain.Appointment
+func (a *appointmentHandler) post(ctx *gin.Context) {
+	var appointment domain.CreateAppointment
 	err := ctx.ShouldBindJSON(&appointment); if err != nil {
 		web.Failure(ctx, 400, err)
 		return
 	}
-	err = d.appointmentService.Post(appointment); if err != nil {
+	err = a.appointmentService.Post(appointment); if err != nil {
 		web.Failure(ctx, 500, err)
 		return
 	}
 	ctx.Status(201)
 }
 
-func (d *appointmentHandler) get(ctx *gin.Context) {
+func (a *appointmentHandler) get(ctx *gin.Context) {
 	id := ctx.Param("id")
 	if id == "" {
 		web.Failure(ctx, 400, errors.New("no id sent"))
@@ -50,7 +54,7 @@ func (d *appointmentHandler) get(ctx *gin.Context) {
 		return
 	}
 
-	appointment, err := d.appointmentService.Get(idConverted); if err != nil {
+	appointment, err := a.appointmentService.Get(idConverted); if err != nil {
 		web.Failure(ctx, 500, errors.New("errors getting entity"))
 		return
 	}
@@ -63,16 +67,16 @@ func (d *appointmentHandler) get(ctx *gin.Context) {
 	ctx.JSON(200, appointment)
 }
 
-func (d *appointmentHandler) getAll(ctx *gin.Context) {
-	appointments, err := d.appointmentService.GetAll(); if err != nil {
+func (a *appointmentHandler) getAll(ctx *gin.Context) {
+	appointments, err := a.appointmentService.GetAll(); if err != nil {
 		web.Failure(ctx, 500, err)
 		return
 	}
 	ctx.JSON(200, appointments)
 }
 
-func (d *appointmentHandler) put(ctx *gin.Context) {
-	var appointment domain.Appointment
+func (a *appointmentHandler) put(ctx *gin.Context) {
+	var appointment domain.UpdateAppointment
 	id := ctx.Param("id")
 	if id == "" {
 		web.Failure(ctx, 400, errors.New("no id sent"))
@@ -89,28 +93,68 @@ func (d *appointmentHandler) put(ctx *gin.Context) {
 		return
 	}
 
-	appointment, err = d.appointmentService.Get(idConverted); if err != nil {
+	_, err = a.appointmentService.Get(idConverted); if err != nil {
 		web.Failure(ctx, 500, errors.New("errors getting entity"))
 		return
 	}
 
-	if reflect.DeepEqual(appointment, domain.Appointment{}) {
+	if reflect.DeepEqual(appointment, domain.UpdateAppointment{}) {
 		web.Failure(ctx, 404, errors.New("entity not found"))
 		return
 	}
 
-	err = d.appointmentService.Put(idConverted, appointment); if err != nil {
+	err = a.appointmentService.Put(idConverted, domain.UpdateAppointment{
+		appointment.PatientId,
+		appointment.DentistId,
+		appointment.AppointmentDate,
+	}); if err != nil {
 		web.Failure(ctx, 500, err)
 		return
 	}
 
 	ctx.Status(204)
 }
-func (d *appointmentHandler) patch(ctx *gin.Context) {
+func (a *appointmentHandler) patch(ctx *gin.Context) {
+	var appointment domain.PatchAppointment
+	id := ctx.Param("id")
+	if id == "" {
+		web.Failure(ctx, 400, errors.New("no id sent"))
+		return
+	}
 
+	idConverted, err := strconv.Atoi(id)
+	if err != nil {
+		web.Failure(ctx, 400, errors.New("incorrect id sent. must be a number"))
+		return
+	}
+
+	err = ctx.ShouldBindJSON(&appointment)
+	if err != nil {
+		web.Failure(ctx, 400, err)
+		return
+	}
+
+	_, err = a.appointmentService.Get(idConverted)
+	if err != nil {
+		web.Failure(ctx, 500, errors.New("errors getting entity"))
+		return
+	}
+
+	if reflect.DeepEqual(appointment, domain.PatchAppointment{}) {
+		web.Failure(ctx, 404, errors.New("entity not found"))
+		return
+	}
+
+	err = a.appointmentService.Patch(idConverted, domain.PatchAppointment{AppointmentDate: appointment.AppointmentDate})
+	if err != nil {
+		web.Failure(ctx, 500, err)
+		return
+	}
+
+	ctx.Status(204)
 }
 
-func (d *appointmentHandler) delete(ctx *gin.Context) {
+func (a *appointmentHandler) delete(ctx *gin.Context) {
 	id := ctx.Param("id")
 	if id == "" {
 		web.Failure(ctx, 400, errors.New("no id sent"))
@@ -122,7 +166,7 @@ func (d *appointmentHandler) delete(ctx *gin.Context) {
 		return
 	}
 
-	appointment, err := d.appointmentService.Get(idConverted); if err != nil {
+	appointment, err := a.appointmentService.Get(idConverted); if err != nil {
 		web.Failure(ctx, 500, errors.New("errors getting entity"))
 		return
 	}
@@ -132,7 +176,7 @@ func (d *appointmentHandler) delete(ctx *gin.Context) {
 		return
 	}
 
-	err = d.appointmentService.Delete(idConverted); if err != nil {
+	err = a.appointmentService.Delete(idConverted); if err != nil {
 		web.Failure(ctx, 500, err)
 		return
 	}
