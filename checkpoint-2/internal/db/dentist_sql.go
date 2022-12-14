@@ -84,7 +84,15 @@ func (d *dentistDatabase) Put(id int, dentist domain.UpdateDentist) error {
 
 	return nil
 }
-func (d *dentistDatabase) Patch(id int, dentist domain.Dentist) error {
+func (d *dentistDatabase) Patch(id int, dentist domain.PatchDentistName) error {
+
+	_, err := d.db.Exec("UPDATE dentists SET name=? WHERE id=?",
+		dentist.Name, id)
+
+	if err != nil {
+		return errors.New("error to update")
+	}
+
 	return nil
 }
 func (d *dentistDatabase) Delete(id int) error {

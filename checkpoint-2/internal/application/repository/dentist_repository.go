@@ -7,6 +7,6 @@ type DentistRepository interface {
 	Get(int) (domain.Dentist, error)
 	GetAll() ([]domain.Dentist, error)
 	Put(int, domain.UpdateDentist) error
-	Patch(int, domain.Dentist) error
+	Patch(int, domain.PatchDentistName) error
 	Delete(int) error
 }

@@ -117,7 +117,43 @@ func (d *dentistHandler) put(ctx *gin.Context) {
 	ctx.Status(204)
 }
 func (d *dentistHandler) patch(ctx *gin.Context) {
+	var dentist domain.PatchDentistName
+	id := ctx.Param("id")
+	if id == "" {
+		web.Failure(ctx, 400, errors.New("no id sent"))
+		return
+	}
 
+	idConverted, err := strconv.Atoi(id)
+	if err != nil {
+		web.Failure(ctx, 400, errors.New("incorrect id sent. must be a number"))
+		return
+	}
+
+	err = ctx.ShouldBindJSON(&dentist)
+	if err != nil {
+		web.Failure(ctx, 400, err)
+		return
+	}
+
+	_, err = d.dentistService.Get(idConverted)
+	if err != nil {
+		web.Failure(ctx, 500, errors.New("errors getting entity"))
+		return
+	}
+
+	if reflect.DeepEqual(dentist, domain.PatchDentistName{}) {
+		web.Failure(ctx, 404, errors.New("entity not found"))
+		return
+	}
+
+	err = d.dentistService.Patch(idConverted, domain.PatchDentistName{Name: dentist.Name})
+	if err != nil {
+		web.Failure(ctx, 500, err)
+		return
+	}
+
+	ctx.Status(204)
 }
 
 func (d *dentistHandler) delete(ctx *gin.Context) {

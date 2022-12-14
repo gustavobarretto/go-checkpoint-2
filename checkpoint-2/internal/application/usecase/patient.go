@@ -9,6 +9,6 @@ type Patient interface {
 	Get(int) (domain.Patient, error)
 	GetAll() ([]domain.Patient, error)
 	Put(int, domain.UpdatePatient) error
-	Patch(int, domain.Patient) error
+	Patch(int, domain.PatchPatientName) error
 	Delete(int) error
 }

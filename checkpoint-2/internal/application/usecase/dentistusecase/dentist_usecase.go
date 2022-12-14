@@ -48,7 +48,7 @@ func (d *dentistService) Put(id int, dentist domain.UpdateDentist) error {
 	return nil
 }
 
-func (d *dentistService) Patch(id int, dentist domain.Dentist) error {
+func (d *dentistService) Patch(id int, dentist domain.PatchDentistName) error {
 	err := d.repository.Patch(id, dentist)
 	if err != nil {
 		log.WithError(err).Info("error patching the dentist")

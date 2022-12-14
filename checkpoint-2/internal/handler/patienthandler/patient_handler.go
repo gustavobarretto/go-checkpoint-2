@@ -118,7 +118,43 @@ func (d *patientHandler) put(ctx *gin.Context) {
 	ctx.Status(204)
 }
 func (d *patientHandler) patch(ctx *gin.Context) {
+	var patient domain.PatchPatientName
+	id := ctx.Param("id")
+	if id == "" {
+		web.Failure(ctx, 400, errors.New("no id sent"))
+		return
+	}
 
+	idConverted, err := strconv.Atoi(id)
+	if err != nil {
+		web.Failure(ctx, 400, errors.New("incorrect id sent. must be a number"))
+		return
+	}
+
+	err = ctx.ShouldBindJSON(&patient)
+	if err != nil {
+		web.Failure(ctx, 400, err)
+		return
+	}
+
+	_, err = d.patientService.Get(idConverted)
+	if err != nil {
+		web.Failure(ctx, 500, errors.New("errors getting entity"))
+		return
+	}
+
+	if reflect.DeepEqual(patient, domain.UpdatePatient{}) {
+		web.Failure(ctx, 404, errors.New("entity not found"))
+		return
+	}
+
+	err = d.patientService.Patch(idConverted, domain.PatchPatientName{Name: patient.Name})
+	if err != nil {
+		web.Failure(ctx, 500, err)
+		return
+	}
+
+	ctx.Status(204)
 }
 
 func (d *patientHandler) delete(ctx *gin.Context) {
